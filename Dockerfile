@@ -1,4 +1,4 @@
-FROM golang:1.22 AS build
+FROM golang:1.22-alpine AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY ./go.sum /app/go.sum
 
 RUN go build main.go
 
-FROM golang:1.22 AS production
+FROM alpine:latest AS production
 
 EXPOSE 8080
 
