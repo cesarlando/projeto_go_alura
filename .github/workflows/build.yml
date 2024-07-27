@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           source: "build.tar"
           target: /home/${{ secrets.USERNAME }}
-          key: ${{ secrets.SECRET_KEY }}
+          key: ${{ secrets.EC2_SECRET_KEY }}
 
       - name: Extract build.tar
         uses: appleboy/ssh-action@v1.0.3
