@@ -45,10 +45,10 @@ jobs:
       - name: SCP to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
           source: "build.tar"
-          target: /home/${{ secrets.USERNAME }}
+          target: /home/${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
 
       - name: Extract build.tar
