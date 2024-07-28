@@ -51,10 +51,12 @@ jobs:
           target: /home/${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
 
-      - name: Extract build.tar
+      - name: Extract build.tar and Restart service
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
-          script: tar -xvf build.tar
+          script: |
+            tar -xvf build.tar
+            sudo systemctl restart projeto
