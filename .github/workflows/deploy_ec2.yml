@@ -1,11 +1,7 @@
 name: "Entrega Contínua EC2"
 
 on:
-<<<<<<< HEAD
   push:
-=======
-  pull_request:
->>>>>>> Novo workflow
     branches: [ "main" ]
 
 jobs:
