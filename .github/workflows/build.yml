@@ -1,4 +1,4 @@
-name: "Construção do artefato"
+name: "Entrega contínua"
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_docker_image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,3 +25,39 @@ jobs:
         with:
           push: true
           tags: cviniciussdias/projeto_go:latest,cviniciussdias/projeto_go:${{ github.sha }}
+
+  deploy_to_ec2:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      - name: Build
+        run: go build main.go
+
+      - name: Unir arquivos
+        run: tar -cvf build.tar ./assets ./templates ./main
+
+      - name: SCP to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          source: "build.tar"
+          target: /home/${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+
+      - name: Extract build.tar and Restart service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            tar -xvf build.tar
+            sudo systemctl restart projeto
